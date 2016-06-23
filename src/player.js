@@ -71,13 +71,13 @@ export const findChromecasts = (cb, timer, cbTimer) => {
   const browser = mdns.createBrowser(mdns.tcp('googlecast'));
 
   browser.on('ready', function () {
-      browser.discover();
+    browser.discover();
   });
 
     // When we find a chromecast
   browser.on('update', function (service) {
     cb({
-      name: (service.txt && service.tx[5]) ? service.txt[5].replace('fn=', '') : 'Chromecast',
+      name: (service.txt && service.txt[5]) ? service.txt[5].replace('fn=', '') : 'Chromecast',
       host: service.addresses[0],
       port: service.port
     });
@@ -110,7 +110,7 @@ export const connectToChromecast = (host) => {
 
     client.launch(DefaultMediaReceiver, function(err, player) {
       if(err){
-        deferred.reject();
+        deferred.reject(err);
       }
 
       deferred.resolve(new RemoteDevice(player, client));

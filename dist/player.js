@@ -53,7 +53,7 @@ var vlc = exports.vlc = function vlc(medias) {
   (0, _vlcCommand2.default)(function (err, cmdVlc) {
 
     // Vlc is not on the computer
-    if (err) return cb(false);
+    if (err) return cb('VLC_NOT_INSTALL');
 
     // Create the content for playlist.pls
     var content = medias.reduce(function (acc, item, index, array) {
@@ -87,7 +87,7 @@ var vlc = exports.vlc = function vlc(medias) {
     // Execute the command
     _child_process2.default.exec(cmd + ' ' + plsPath);
 
-    return cb(true);
+    return cb(null, 'PLAYLIST_PLAYED');
   });
 };
 
@@ -109,7 +109,7 @@ var findChromecasts = exports.findChromecasts = function findChromecasts(cb, tim
   // When we find a chromecast
   browser.on('update', function (service) {
     cb({
-      name: service.txt && service.tx[5] ? service.txt[5].replace('fn=', '') : 'Chromecast',
+      name: service.txt && service.txt[5] ? service.txt[5].replace('fn=', '') : 'Chromecast',
       host: service.addresses[0],
       port: service.port
     });
@@ -141,7 +141,7 @@ var connectToChromecast = exports.connectToChromecast = function connectToChrome
 
     client.launch(_castv2Client.DefaultMediaReceiver, function (err, player) {
       if (err) {
-        deferred.reject();
+        deferred.reject(err);
       }
 
       deferred.resolve(new _remote2.default(player, client));
